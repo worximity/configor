@@ -46,11 +46,7 @@ func (configor *Configor) Load(config interface{}, files ...string) error {
 		}
 	}
 
-	if prefix := configor.getENVPrefix(config); prefix == "-" {
-		return processTags(config)
-	} else {
-		return processTags(config, prefix)
-	}
+	return processTags(config, "WX_ENV")
 }
 
 // ENV return environment

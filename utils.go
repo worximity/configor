@@ -13,15 +13,6 @@ import (
 	yaml "gopkg.in/yaml.v1"
 )
 
-func (configor *Configor) getENVPrefix(config interface{}) string {
-	if configor.Config.ENVPrefix == "" {
-		if prefix := os.Getenv("CONFIGOR_ENV_PREFIX"); prefix != "" {
-			return prefix
-		}
-		return "Configor"
-	}
-	return configor.Config.ENVPrefix
-}
 
 func getConfigurationFileWithENVPrefix(file, env string) (string, error) {
 	var (
