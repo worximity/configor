@@ -30,13 +30,13 @@ func fileNameWithBasePath(name string) string {
 func getConfigurationFileWithENVPrefix(file, env string) (string, error) {
 	var (
 		envFile string
-		extname = path.Ext(fileNameWithBasePath(file))
+		extname = path.Ext(file)
 	)
 
 	if extname == "" {
-		envFile = fmt.Sprintf("%v.%v", fileNameWithBasePath(file), env)
+		envFile = fmt.Sprintf("%v.%v", file, env)
 	} else {
-		envFile = fmt.Sprintf("%v.%v%v", strings.TrimSuffix(fileNameWithBasePath(file), extname), env, extname)
+		envFile = fmt.Sprintf("%v.%v%v", strings.TrimSuffix(file, extname), env, extname)
 	}
 
 	if fileInfo, err := os.Stat(envFile); err == nil && fileInfo.Mode().IsRegular() {
@@ -78,10 +78,13 @@ func (configor *Configor) getConfigurationFiles(files ...string) []string {
 }
 
 func processFile(config interface{}, file string) error {
-	data, err := ioutil.ReadFile(fileNameWithBasePath(file))
+	data, err := ioutil.ReadFile(file)
 	if err != nil {
+		fmt.Errorf("Error loading config file from %s : %s", file, err)
 		return err
 	}
+
+	fmt.Printf("Loading config from %s \n", file)
 
 	switch {
 	case strings.HasSuffix(file, ".yaml") || strings.HasSuffix(file, ".yml"):
