@@ -1,7 +1,6 @@
 package configor_test
 
 import (
-	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"os"
@@ -10,8 +9,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/BurntSushi/toml"
-	"github.com/jinzhu/configor"
+	"github.com/worximity/configor"
 )
 
 type Anonymous struct {
@@ -73,52 +71,6 @@ func TestLoadNormalConfig(t *testing.T) {
 			defer file.Close()
 			defer os.Remove(file.Name())
 			file.Write(bytes)
-
-			var result Config
-			configor.Load(&result, file.Name())
-			if !reflect.DeepEqual(result, config) {
-				t.Errorf("result should equal to original configuration")
-			}
-		}
-	} else {
-		t.Errorf("failed to marshal config")
-	}
-}
-
-func TestLoadConfigFromTomlWithExtension(t *testing.T) {
-	var (
-		config = generateDefaultConfig()
-		buffer bytes.Buffer
-	)
-
-	if err := toml.NewEncoder(&buffer).Encode(config); err == nil {
-		if file, err := ioutil.TempFile("/tmp", "configor.toml"); err == nil {
-			defer file.Close()
-			defer os.Remove(file.Name())
-			file.Write(buffer.Bytes())
-
-			var result Config
-			configor.Load(&result, file.Name())
-			if !reflect.DeepEqual(result, config) {
-				t.Errorf("result should equal to original configuration")
-			}
-		}
-	} else {
-		t.Errorf("failed to marshal config")
-	}
-}
-
-func TestLoadConfigFromTomlWithoutExtension(t *testing.T) {
-	var (
-		config = generateDefaultConfig()
-		buffer bytes.Buffer
-	)
-
-	if err := toml.NewEncoder(&buffer).Encode(config); err == nil {
-		if file, err := ioutil.TempFile("/tmp", "configor"); err == nil {
-			defer file.Close()
-			defer os.Remove(file.Name())
-			file.Write(buffer.Bytes())
 
 			var result Config
 			configor.Load(&result, file.Name())
