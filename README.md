@@ -52,6 +52,12 @@ contacts:
 
 # Advanced Usage
 
+* Base path
+
+To change the base path from where the config.json file is loaded, use the ```CONFIGOR_BASE_PATH``` environment variable. 
+
+By default, it uses ```./```. As well, if the configuration file name starts with a slash (```/```), no transformation of the path takes place.
+
 * Load mutiple configurations
 
 ```go
@@ -100,19 +106,11 @@ $ go run config.go
 // Will load `config.example.yml` automatically if `config.yml` not found and print warning message
 ```
 
-* Load From Shell Environment
+* Load values from environment variables
 
 ```go
-$ CONFIGOR_APPNAME="hello world" CONFIGOR_DB_NAME="hello world" go run config.go
+$ WX_ENV_MyConfigValueProperty="hello world" go run config.go
 // Load configuration from shell environment, it's name is {{prefix}}_FieldName
-```
-
-```go
-// You could overwrite the prefix with environment CONFIGOR_ENV_PREFIX, for example:
-$ CONFIGOR_ENV_PREFIX="WEB" WEB_APPNAME="hello world" WEB_DB_NAME="hello world" go run config.go
-
-// Set prefix by config
-configor.New(&configor.Config{ENVPrefix: "WEB"}).Load(&Config, "config.json")
 ```
 
 * Anonymous Struct

@@ -19,7 +19,7 @@ func fileNameWithBasePath(name string) string {
 		return name
 	}
 
-	var basePath = "."
+	var basePath = "./"
 	if env := os.Getenv("CONFIGOR_BASE_PATH"); len(env) > 0 {
 		basePath = env;
 	}
@@ -83,8 +83,6 @@ func processFile(config interface{}, file string) error {
 		fmt.Errorf("Error loading config file from %s : %s", file, err)
 		return err
 	}
-
-	fmt.Printf("Loading config from %s \n", file)
 
 	switch {
 	case strings.HasSuffix(file, ".yaml") || strings.HasSuffix(file, ".yml"):
