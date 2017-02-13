@@ -14,16 +14,29 @@ import (
 )
 
 
+func fileNameWithBasePath(name string) string {
+	if strings.Index(name, "/") == 0 {
+		return name
+	}
+
+	var basePath = "."
+	if env := os.Getenv("CONFIGOR_BASE_PATH"); len(env) > 0 {
+		basePath = env;
+	}
+	return basePath + name
+}
+
+
 func getConfigurationFileWithENVPrefix(file, env string) (string, error) {
 	var (
 		envFile string
-		extname = path.Ext(file)
+		extname = path.Ext(fileNameWithBasePath(file))
 	)
 
 	if extname == "" {
-		envFile = fmt.Sprintf("%v.%v", file, env)
+		envFile = fmt.Sprintf("%v.%v", fileNameWithBasePath(file), env)
 	} else {
-		envFile = fmt.Sprintf("%v.%v%v", strings.TrimSuffix(file, extname), env, extname)
+		envFile = fmt.Sprintf("%v.%v%v", strings.TrimSuffix(fileNameWithBasePath(file), extname), env, extname)
 	}
 
 	if fileInfo, err := os.Stat(envFile); err == nil && fileInfo.Mode().IsRegular() {
@@ -37,7 +50,7 @@ func (configor *Configor) getConfigurationFiles(files ...string) []string {
 
 	for i := len(files) - 1; i >= 0; i-- {
 		foundFile := false
-		file := files[i]
+		file := fileNameWithBasePath(files[i])
 
 		// check configuration
 		if fileInfo, err := os.Stat(file); err == nil && fileInfo.Mode().IsRegular() {
@@ -65,7 +78,7 @@ func (configor *Configor) getConfigurationFiles(files ...string) []string {
 }
 
 func processFile(config interface{}, file string) error {
-	data, err := ioutil.ReadFile(file)
+	data, err := ioutil.ReadFile(fileNameWithBasePath(file))
 	if err != nil {
 		return err
 	}
