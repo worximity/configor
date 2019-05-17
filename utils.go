@@ -10,9 +10,8 @@ import (
 	"reflect"
 	"strings"
 
-	yaml "gopkg.in/yaml.v1"
+	yaml "gopkg.in/yaml.v2"
 )
-
 
 func fileNameWithBasePath(name string) string {
 	if strings.Index(name, "/") == 0 {
@@ -21,11 +20,10 @@ func fileNameWithBasePath(name string) string {
 
 	var basePath = "./"
 	if env := os.Getenv("CONFIGOR_BASE_PATH"); len(env) > 0 {
-		basePath = env;
+		basePath = env
 	}
 	return basePath + name
 }
-
 
 func getConfigurationFileWithENVPrefix(file, env string) (string, error) {
 	var (
@@ -91,11 +89,11 @@ func processFile(config interface{}, file string) error {
 		return json.Unmarshal(data, config)
 	default:
 
-			if json.Unmarshal(data, config) != nil {
-				if yaml.Unmarshal(data, config) != nil {
-					return errors.New("failed to decode config")
-				}
+		if json.Unmarshal(data, config) != nil {
+			if yaml.Unmarshal(data, config) != nil {
+				return errors.New("failed to decode config")
 			}
+		}
 
 		return nil
 	}
